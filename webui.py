@@ -79,7 +79,7 @@ def parse_args():
 def launch_app(args):
     inbrowser = not args.nobrowser
     favicon_path = "logo.ico"
-    shared.gradio_root.queue(concurrency_count=4)
+    shared.gradio_root.queue()
     shared.gradio_root.launch(
         inbrowser=inbrowser,
         server_name=args.listen,
@@ -226,17 +226,17 @@ shared.gradio_root = gr.Blocks(
     title="RuinedFooocus " + version.version,
     theme=theme,
     css=modules.html.css,
-    analytics_enabled=True,
-    concurrency_count=4,
+    analytics_enabled=False,
 ).queue()
 
 with shared.gradio_root as block:
-    block.load(_js=modules.html.scripts)
+    block.load(js=modules.html.scripts)
     run_event = gr.Number(visible=False, value=0)
     with gr.Row():
         with gr.Column(scale=5):
             main_view = gr.Image(
                 value="init_image.png",
+                width="100%",
                 height=680,
                 type="filepath",
                 visible=True,
@@ -244,11 +244,11 @@ with shared.gradio_root as block:
                 image_mode="RGBA",
             )
             add_ctrl("main_view", main_view)
-            inpaint_view = gr.Image(
+            inpaint_view = gr.ImageEditor(
+                width="100%",
                 height=680,
                 type="numpy",
                 elem_id="inpaint_sketch",
-                tool="sketch",
                 visible=False,
                 image_mode="RGBA",
             )
@@ -262,7 +262,7 @@ with shared.gradio_root as block:
             )
 
             gallery = gr.Gallery(
-                label="Gallery",
+                label="",
                 show_label=False,
                 object_fit="scale-down",
                 height=60,
@@ -278,8 +278,8 @@ with shared.gradio_root as block:
                 show_progress="hidden",
             )
             def gallery_change(files, sd: gr.SelectData):
-                names = files[sd.index]["name"]
-                with Image.open(files[sd.index]["name"]) as im:
+                names = files[sd.index][0]
+                with Image.open(files[sd.index][0]) as im:
                     if im.info.get("parameters"):
                         metadata = im.info["parameters"]
                     else:
@@ -604,8 +604,6 @@ with shared.gradio_root as block:
                 with gr.Tab(label="Model"):
                     model_current = gr.HTML(
                         value=f"{settings['base_model']}",
-                        container=False,
-                        interactive=False,
                     )
                     with gr.Group():
                         modelfilter = gr.Textbox(

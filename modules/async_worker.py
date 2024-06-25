@@ -88,9 +88,10 @@ def worker():
 
         loras = []
 
-        for lora_data in gen_data["loras"]:
-            w, l  = lora_data[1].split(" - ", 1)
-            loras.append((l, float(w)))
+        if gen_data["loras"] is not None:
+            for lora_data in gen_data["loras"]:
+                w, l  = lora_data[1].split(" - ", 1)
+                loras.append((l, float(w)))
 
         parsed_loras, pos_stripped, neg_stripped = parse_loras(
             gen_data["prompt"], gen_data["negative"]
