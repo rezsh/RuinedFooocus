@@ -39,9 +39,11 @@ class Civit:
             with open(filename, 'rb') as f:
                 for chunk in iter(lambda: f.read(blksize), b""):
                     hash_sha256.update(chunk)
+            f.close()
             return hash_sha256.hexdigest().upper()
-        except:
+        except Exception as e:
             print(f"model_sha256(): Failed reading {filename}")
+            print(f"Error: {e}")
             return None
 
 #    def get_models_by_hash(self, hash):
@@ -81,6 +83,9 @@ class Civit:
         if data is not None:
             return data
 
+        if Path(path).suffix == ".merge":
+            return {"baseModel": "Merge"}
+
         hash = self.model_sha256(path)
         url = f"{self.base_url}model-versions/by-hash/{hash}"
         try:
@@ -98,7 +103,7 @@ class Civit:
             print(f"Error: {e}")
 
         if data is None:
-            return {}
+            data = {}
 
         print(f"Update model data: {json_path}")
         with open(json_path, "w") as f:
@@ -107,7 +112,7 @@ class Civit:
         return data
 
     def get_keywords(self, model):
-        keywords = model.get("trainedWords", ["No Keywords for LoRA"])
+        keywords = model.get("trainedWords", [""])
         return keywords
 
     def get_model_base(self, model):
@@ -125,6 +130,10 @@ class Civit:
         import imageio.v3 as iio
 
         path = path.with_suffix(".jpeg")
+
+        if "baseModel" in model and model["baseModel"] == "Merge":
+            return
+
         image_url = None
         for preview in model.get("images", [{}]):
             url = preview.get("url")
@@ -133,7 +142,7 @@ class Civit:
                 image_url = url
                 response = self.session.get(image_url)
                 if response.status_code != 200:
-                    print(f"WARNING: get_image() - {response.status} : {response.reason}")
+                    print(f"WARNING: get_image() - {response.status_code} : {response.reason}")
                     break
                 with open(path, "wb") as file:
                     file.write(response.content)
