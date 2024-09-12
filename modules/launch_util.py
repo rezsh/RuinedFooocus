@@ -1,6 +1,7 @@
 import os
 import importlib
 import importlib.util
+import importlib.metadata
 import shutil
 import subprocess
 import sys
@@ -49,9 +50,12 @@ def repo_dir(name):
     return str(Path(script_path) / dir_repos / name)
 
 
-def is_installed(package):
+def is_installed(package, version=None):
     try:
         spec = importlib.util.find_spec(package)
+        if version is not None:
+            if re.sub("\+.*$", "", importlib.metadata.version(package)) != version:
+                return False
     except ModuleNotFoundError:
         return False
 

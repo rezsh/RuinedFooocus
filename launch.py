@@ -54,9 +54,12 @@ def prepare_environment():
     torch_index_url = os.environ.get(
         "TORCH_INDEX_URL", "https://download.pytorch.org/whl/cu121"
     )
+    torch_version = os.environ.get(
+        "TORCH_VERSION", "2.2.2"
+    )
     torch_command = os.environ.get(
         "TORCH_COMMAND",
-        f"pip install torch==2.2.2 torchvision==0.17.2 --extra-index-url {torch_index_url}",
+        f"pip install torch=={torch_version} torchvision==0.17.2 --extra-index-url {torch_index_url}",
     )
     requirements_file = os.environ.get("REQS_FILE", "requirements_versions.txt")
 
@@ -73,7 +76,7 @@ def prepare_environment():
     if not is_installed("packaging"):
         run(f'"{python}" -m pip install packaging', "Installing packaging", "Couldn't install packaging", live=True)
 
-    if REINSTALL_ALL or not is_installed("torch") or not is_installed("torchvision"):
+    if REINSTALL_ALL or not is_installed("torch", version=torch_version) or not is_installed("torchvision"):
         run(
             f'"{python}" -m {torch_command}',
             "Installing torch and torchvision",
