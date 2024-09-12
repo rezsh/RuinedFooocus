@@ -55,7 +55,7 @@ def prepare_environment():
         "TORCH_INDEX_URL", "https://download.pytorch.org/whl/cu121"
     )
     torch_version = os.environ.get(
-        "TORCH_VERSION", "2.2.2"
+        "TORCH_VERSION", "2.2.2+cu121"
     )
     torch_command = os.environ.get(
         "TORCH_COMMAND",

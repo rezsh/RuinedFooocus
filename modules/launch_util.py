@@ -54,7 +54,8 @@ def is_installed(package, version=None):
     try:
         spec = importlib.util.find_spec(package)
         if version is not None:
-            if re.sub("\+.*$", "", importlib.metadata.version(package)) != version:
+            #if re.sub("\+.*$", "", importlib.metadata.version(package)) != version:
+            if importlib.metadata.version(package) != version:
                 return False
     except ModuleNotFoundError:
         return False
