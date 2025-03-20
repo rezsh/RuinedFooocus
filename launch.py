@@ -148,8 +148,8 @@ def download_models():
     model_filenames = [
         (
             path_manager.model_paths["modelfile_path"],
-            "sd_xl_base_1.0_0.9vae.safetensors",
-            "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0_0.9vae.safetensors",
+            "flux1-dev-bnb-nf4",
+            "https://huggingface.co/lllyasviel/flux1-dev-bnb-nf4/blob/main/flux1-dev-bnb-nf4-v2.safetensors",
         ),
         (
             path_manager.model_paths["lorafile_path"],
