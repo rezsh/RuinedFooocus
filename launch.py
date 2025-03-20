@@ -149,7 +149,7 @@ def download_models():
         (
             path_manager.model_paths["modelfile_path"],
             "flux1-dev-bnb-nf4",
-            "https://huggingface.co/lllyasviel/flux1-dev-bnb-nf4/blob/main/flux1-dev-bnb-nf4-v2.safetensors",
+            "https://huggingface.co/lllyasviel/flux1-dev-bnb-nf4/resolve/main/flux1-dev-bnb-nf4-v2.safetensors",
         ),
         (
             path_manager.model_paths["lorafile_path"],
